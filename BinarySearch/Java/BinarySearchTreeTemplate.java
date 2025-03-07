@@ -5,13 +5,13 @@ package BinarySearch.Java;
  * This class provides a blueprint for implementing a Binary Search Tree with
  * various operations like insert, delete, search, and traversal.
  */
-public class BinarySearchTree {
+public class BinarySearchTreeTemplate {
     private Node root;
 
     /**
      * Constructor to create an empty Binary Search Tree.
      */
-    public BinarySearchTree() {
+    public BinarySearchTreeTemplate() {
         this.root = null;
     }
 
