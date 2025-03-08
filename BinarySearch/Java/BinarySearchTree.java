@@ -33,6 +33,27 @@ public class BinarySearchTree {
         // TODO: Implement this method
         // If the tree is empty, create a new node as root
         // Otherwise, find the correct position to insert the new node
+        Node newNode = new Node(value);
+        if (root == null) {
+            root = newNode;
+            return;
+        }
+
+        Node current = root;
+        Node prev = null;
+        while (current != null) {
+            prev = current;
+           if (current.getValue() >= value) {
+                current = current.getLeft();
+           } else {
+                current = current.getRight();
+           }
+        }
+        if (prev.getValue() > value) {
+            prev.setLeft(newNode);
+        } else {
+            prev.setRight(newNode);
+        }
     }
 
     /**
@@ -45,6 +66,20 @@ public class BinarySearchTree {
         // TODO: Implement this method
         // Start from the root and traverse the tree
         // Return true if the value is found, false otherwise
+        if (root == null) {
+            return false;
+        }
+
+        Node current = root;
+        while (current != null) {
+            if (current.getValue() == value) {
+                return true;
+            } else if (value < current.getValue()) {
+                current = current.getLeft();
+            } else {
+                current = current.getRight();
+            }
+        }
         return false;
     }
 
@@ -59,7 +94,73 @@ public class BinarySearchTree {
         // Find the node to delete
         // Handle different cases: node with no children, one child, or two children
         // Return true if the value was found and deleted, false otherwise
-        return false;
+        if (!search(value)) {
+            return false;
+        }
+
+        // 1. with no children
+        // 3. two children
+        // 2. one child
+
+        Node current = root;
+        Node prev = null;
+        
+        while (current != null && current.getValue() != value) {
+            prev = current;
+            if (value < current.getValue()) {
+                current = current.getLeft();
+            } else {
+                current = current.getRight();
+            }
+        }
+
+        if (prev == null) {
+            root = deleteNode(root);
+            return true;
+        }
+
+        if (prev.getLeft() == (current)) {
+            prev.setLeft(deleteNode(current));
+        } else {
+            prev.setRight(deleteNode(current));
+        }
+
+
+        return true;
+    }
+
+    private Node deleteNode(Node node) {
+        if (node.getLeft() == null && node.getRight() == null) {
+            return null;
+        }
+
+        if (node.getLeft() == null) {
+            return node.getRight();
+        }
+        if (node.getRight() == null) {
+            return node.getLeft();
+        }
+
+        Node successor = findMin(node.getRight());
+        node.setValue(successor.getValue());
+        node.setRight(deleteMinNode(node.getRight()));
+        return node;
+    }
+
+    private Node findMin(Node node) {
+        while (node.getLeft() != null) {
+            node = node.getLeft();
+        }
+        return node;
+    }
+
+    private Node deleteMinNode(Node node) {
+        if (node.getLeft() == null) {
+            return node.getRight();
+        }
+
+        node.setLeft(deleteMinNode(node.getLeft()));
+        return node;
     }
 
     /**
@@ -80,6 +181,11 @@ public class BinarySearchTree {
     private void inOrderTraversal(Node node) {
         // TODO: Implement this method
         // If the node is null, return
+        if (node == null) return;
+        
+        inOrderTraversal(node.getLeft());
+        System.out.println(node.getValue());
+        inOrderTraversal(node.getRight());
         // Otherwise, traverse left subtree, visit the node, traverse right subtree
     }
 
@@ -101,6 +207,13 @@ public class BinarySearchTree {
     private void preOrderTraversal(Node node) {
         // TODO: Implement this method
         // If the node is null, return
+        if (node == null) {
+            return;
+        }
+
+        System.out.println(node.getValue());
+        preOrderTraversal(node.getLeft());
+        preOrderTraversal(node.getRight());
         // Otherwise, visit the node, traverse left subtree, traverse right subtree
     }
 
@@ -122,6 +235,13 @@ public class BinarySearchTree {
     private void postOrderTraversal(Node node) {
         // TODO: Implement this method
         // If the node is null, return
+        if (node == null) {
+            return;
+        }
+
+        postOrderTraversal(node.getLeft());
+        postOrderTraversal(node.getRight());
+        System.out.println(node.getValue());
         // Otherwise, traverse left subtree, traverse right subtree, visit the node
     }
 
@@ -133,7 +253,17 @@ public class BinarySearchTree {
     public int findMin() {
         // TODO: Implement this method
         // The minimum value is the leftmost node in the tree
-        return Integer.MIN_VALUE;
+        if (root == null) {
+            return Integer.MIN_VALUE;
+        }
+        Node current = root;
+        Node prev = null;
+        while (current != null) {
+            prev = current;
+            current = current.getLeft();
+        }
+        return prev.getValue();
+        
     }
 
     /**
@@ -144,7 +274,17 @@ public class BinarySearchTree {
     public int findMax() {
         // TODO: Implement this method
         // The maximum value is the rightmost node in the tree
-        return Integer.MAX_VALUE;
+        if (root == null) {
+            return Integer.MAX_VALUE;
+        }
+        Node current = root;
+        Node prev = null;
+
+        while (current != null) {
+            prev = current;
+            current = current.getRight();
+        }
+        return prev.getValue();
     }
 
     /**
@@ -168,7 +308,11 @@ public class BinarySearchTree {
         // TODO: Implement this method
         // If the node is null, return -1
         // Otherwise, return 1 + the maximum of the heights of the left and right subtrees
-        return -1;
+        if (node == null) {
+            return -1;
+        }
+        
+        return 1 + Math.max(getHeight(node.getLeft()), getHeight(node.getRight()));
     }
 
     /**
