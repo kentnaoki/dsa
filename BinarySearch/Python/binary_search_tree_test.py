@@ -4,12 +4,14 @@ This class provides methods to test various operations of the Binary Search Tree
 """
 from BinarySearch.Python.binary_search_tree_template import BinarySearchTreeTemplate
 from BinarySearch.Python.binary_search_tree_solution import BinarySearchTreeSolution
+from BinarySearch.Python.binary_search_tree import BinarySearchTree
 import sys
 
 # Uncomment the line below to use your implementation
 # BST = BinarySearchTreeTemplate
 # Comment the line below to use your implementation
-BST = BinarySearchTreeSolution
+# BST = BinarySearchTreeSolution
+BST = BinarySearchTree
 
 def test_insert():
     """

@@ -4,6 +4,9 @@
 
 echo "Running Python Binary Search Tree tests..."
 
+# Add the current directory to PYTHONPATH
+export PYTHONPATH=$PYTHONPATH:$(pwd)
+
 # Try to run from current directory first, then try with full path
 if [ -d "Python" ]; then
     # We're in the BinarySearch directory

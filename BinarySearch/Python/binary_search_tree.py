@@ -29,25 +29,27 @@ class BinarySearchTree:
         Args:
             value: The value to be inserted
         """
-        new_node = Node(value)
-        if self.root is None:
+        # TODO: Implement this method
+        # If the tree is empty, create a new node as root
+        # Otherwise, find the correct position to insert the new node
+        new_node = Node(value);
+        if self.root == None:
             self.root = new_node
             return
-        
+
         current = self.root
         prev = None
-        while current is not None:
-            if value <= current.get_value():
-                prev = current
-                current = current.get_left()
+        while current != None:
+            prev = current
+            if value <= current.value:
+                current = current.left
             else:
-                prev = current
-                current = current.get_right()
+                current = current.right
         
-        if value <= prev.get_value():
-            prev.set_left(new_node)
+        if value <= prev.value:
+            prev.left = new_node
         else:
-            prev.set_right(new_node)
+            prev.right = new_node
     
     def search(self, value):
         """
@@ -59,157 +61,151 @@ class BinarySearchTree:
         Returns:
             True if the value is found, False otherwise
         """
-        return self._dfs(self.root, value)
-    
-    def _dfs(self, node, value):
-        """
-        Helper method for search using depth-first search.
+        # TODO: Implement this method
+        # Start from the root and traverse the tree
+        # Return True if the value is found, False otherwise
         
-        Args:
-            node: The current node being visited
-            value: The value to search for
-            
-        Returns:
-            True if the value is found, False otherwise
-        """
-        if node is None:
+        return self.dfs(self.root, value)
+
+
+    def dfs(self, node, value) -> bool:
+        if node == None:
             return False
-        
-        if node.get_value() == value:
+        if node.value == value:
             return True
         
-        return self._dfs(node.get_left(), value) or self._dfs(node.get_right(), value)
-    
-    def delete(self, value):
-        """
-        Delete a value from the Binary Search Tree.
-        
-        Args:
-            value: The value to be deleted
-            
-        Returns:
-            True if the value was found and deleted, False otherwise
-        """
-        if not self.search(value):
+        return self.dfs(node.left, value) or self.dfs(node.right, value)
+
+    def delete(self, value) -> bool:
+        if self.search(value) is False:
             return False
-        
-        # Special case for root
-        if self.root.get_value() == value:
-            if self.root.get_left() is None and self.root.get_right() is None:
-                self.root = None
-            elif self.root.get_left() is None:
-                self.root = self.root.get_right()
-            elif self.root.get_right() is None:
-                self.root = self.root.get_left()
-            else:
-                # Find the smallest node in the right subtree
-                smallest = self._get_smallest_node(self.root.get_right())
-                # Remove the smallest node from its original position
-                self._remove_node(self.root.get_right(), smallest.get_value())
-                # Replace the root with the smallest node
-                smallest.set_left(self.root.get_left())
-                smallest.set_right(self.root.get_right())
-                self.root = smallest
-            return True
-        
-        # Find the node to delete and its parent
-        parent = None
+
         current = self.root
-        is_left_child = False
-        
-        while current is not None and current.get_value() != value:
-            parent = current
-            if value < current.get_value():
-                current = current.get_left()
-                is_left_child = True
+        prev = None
+
+        while current != None and current.value != value:
+            prev = current
+            if value <= current.value:
+                current = current.left
             else:
-                current = current.get_right()
-                is_left_child = False
+                current = current.right
         
-        # Case 1: Node has no children
-        if current.get_left() is None and current.get_right() is None:
-            if is_left_child:
-                parent.set_left(None)
-            else:
-                parent.set_right(None)
-        
-        # Case 2: Node has one child
-        elif current.get_left() is None:
-            if is_left_child:
-                parent.set_left(current.get_right())
-            else:
-                parent.set_right(current.get_right())
-        elif current.get_right() is None:
-            if is_left_child:
-                parent.set_left(current.get_left())
-            else:
-                parent.set_right(current.get_left())
-        
-        # Case 3: Node has two children
+        if prev == None:
+            self.root = self._delete_node(self.root)
+            return True
+
+        if prev.left == current:
+            prev.left = self._delete_node(current)
         else:
-            # Find the smallest node in the right subtree
-            smallest = self._get_smallest_node(current.get_right())
-            # Remove the smallest node from its original position
-            self._remove_node(current.get_right(), smallest.get_value())
-            # Replace the current node with the smallest node
-            smallest.set_left(current.get_left())
-            smallest.set_right(current.get_right())
-            if is_left_child:
-                parent.set_left(smallest)
-            else:
-                parent.set_right(smallest)
-        
+            prev.right = self._delete_node(current)
+
         return True
-    
-    def _get_smallest_node(self, node):
-        """
-        Helper method to find the smallest node in a subtree.
         
-        Args:
-            node: The root of the subtree
-            
-        Returns:
-            The node with the smallest value
-        """
-        current = node
-        while current.get_left() is not None:
-            current = current.get_left()
-        return current
-    
-    def _remove_node(self, root, value):
-        """
-        Helper method to remove a node from a subtree.
-        
-        Args:
-            root: The root of the subtree
-            value: The value to be removed
-        """
-        if root is None:
+    def _delete_node(self, node) -> Node:
+        # 1. no children
+        if node.right == None and node.left == None:
             return None
+        # 2. one child
+        if node.right == None:
+            return node.left
+        if node.left == None:
+            return node.right
+
+        # 3. two children
+        successor = self._find_min_node(node.right)
+        node.value = successor.value
+        node.right = self._delete_min_node(node.right)
+        return node
         
-        if root.get_value() == value:
-            if root.get_left() is None:
-                return root.get_right()
-            elif root.get_right() is None:
-                return root.get_left()
-            else:
-                smallest = self._get_smallest_node(root.get_right())
-                root.set_value(smallest.get_value())
-                root.set_right(self._remove_node(root.get_right(), smallest.get_value()))
-                return root
-        elif value < root.get_value():
-            root.set_left(self._remove_node(root.get_left(), value))
-        else:
-            root.set_right(self._remove_node(root.get_right(), value))
-        return root
+
+    def _find_min_node(self, node) -> Node:
+        while node.left != None:
+            node = node.left
+        return node
+
+    def _delete_min_node(self, node) -> Node:
+        if node.left == None:
+            return node.right
+        
+        node.left = self._delete_min_node(node.left)
+        return node
+    
+    # def delete(self, value) -> bool:
+    #     """
+    #     Delete a value from the Binary Search Tree.
+        
+    #     Args:
+    #         value: The value to be deleted
+            
+    #     Returns:
+    #         True if the value was found and deleted, False otherwise
+    #     """
+    #     # TODO: Implement this method
+    #     # Find the node to delete
+    #     # Handle different cases: node with no children, one child, or two children
+    #     # Return True if the value was found and deleted, False otherwise
+    #     if self.search(value) is False:
+    #         return False
+
+    #     current = self.root
+    #     prev = None
+
+    #     while current != None and current.value != value:
+    #         prev = current
+    #         if value <= current.value:
+    #             current = current.left
+    #         else:
+    #             current = current.right
+        
+    #     if prev == None:
+    #         self.delete_node(self.root)
+    #         return True
+        
+    #     if prev.left == current:
+    #         prev.left = self.delete_node(current)
+    #     else:
+    #         prev.right = self.delete_node(current)
+
+    #     return True
+        
+
+    # def delete_node(self, node) -> Node:
+    #     if node.left == None and node.right == None:
+    #         return None
+
+    #     if node.left == None:
+    #         return node.right
+    #     if node.right == None:
+    #         return node.left
+
+    #     successor = self.find_min_node(node.right)
+    #     node.value = successor.value
+    #     node.right = self.delete_min_node(node.right)
+    #     return node
+
+
+    # def find_min_node(self, node) -> Node:
+    #     while node.left != None:
+    #         node = node.left
+    #     return node
+
+    # def delete_min_node(self, node) -> Node:
+    #     if node.left == None:
+    #         return node.right
+
+    #     node.left = self.delete_min_node(node.left)
+    #     return node
+
     
     def in_order_traversal(self):
         """
         Perform an in-order traversal of the Binary Search Tree.
         In-order traversal visits the left subtree, then the root, then the right subtree.
         """
+        # TODO: Implement this method
+        # Use a helper method to perform the traversal recursively
+
         self._in_order_traversal(self.root)
-        print()  # Add a newline at the end
     
     def _in_order_traversal(self, node):
         """
@@ -218,20 +214,24 @@ class BinarySearchTree:
         Args:
             node: The current node being visited
         """
-        if node is None:
-            return
-        
-        self._in_order_traversal(node.get_left())
-        print(node.get_value(), end=" ")
-        self._in_order_traversal(node.get_right())
+        # TODO: Implement this method
+        # If the node is None, return
+        # Otherwise, traverse left subtree, visit the node, traverse right subtree
+        if node == None:
+            return;
+
+        self._in_order_traversal(node.left)
+        print(node.value)
+        self._in_order_traversal(node.right)
     
     def pre_order_traversal(self):
         """
         Perform a pre-order traversal of the Binary Search Tree.
         Pre-order traversal visits the root, then the left subtree, then the right subtree.
         """
+        # TODO: Implement this method
+        # Use a helper method to perform the traversal recursively
         self._pre_order_traversal(self.root)
-        print()  # Add a newline at the end
     
     def _pre_order_traversal(self, node):
         """
@@ -240,20 +240,23 @@ class BinarySearchTree:
         Args:
             node: The current node being visited
         """
-        if node is None:
+        # TODO: Implement this method
+        # If the node is None, return
+        # Otherwise, visit the node, traverse left subtree, traverse right subtree
+        if node == None:
             return
-        
-        print(node.get_value(), end=" ")
-        self._pre_order_traversal(node.get_left())
-        self._pre_order_traversal(node.get_right())
+        print(node.value)
+        self._pre_order_traversal(node.left)
+        self._pre_order_traversal(node.right)
     
     def post_order_traversal(self):
         """
         Perform a post-order traversal of the Binary Search Tree.
         Post-order traversal visits the left subtree, then the right subtree, then the root.
         """
+        # TODO: Implement this method
+        # Use a helper method to perform the traversal recursively
         self._post_order_traversal(self.root)
-        print()  # Add a newline at the end
     
     def _post_order_traversal(self, node):
         """
@@ -262,44 +265,51 @@ class BinarySearchTree:
         Args:
             node: The current node being visited
         """
-        if node is None:
+        # TODO: Implement this method
+        # If the node is None, return
+        # Otherwise, traverse left subtree, traverse right subtree, visit the node
+        if node == None:
             return
-        
-        self._post_order_traversal(node.get_left())
-        self._post_order_traversal(node.get_right())
-        print(node.get_value(), end=" ")
+        self._post_order_traversal(node.left)
+        self._post_order_traversal(node.right)
+        print(node.value)
     
     def find_min(self):
         """
         Find the minimum value in the Binary Search Tree.
         
         Returns:
-            The minimum value, or sys.maxsize if the tree is empty
+            The minimum value, or sys.maxsize * -1 if the tree is empty
         """
-        if self.root is None:
+        # TODO: Implement this method
+        # The minimum value is the leftmost node in the tree
+        if self.root == None:
             return sys.maxsize * -1  # Python's equivalent of Integer.MIN_VALUE
         
         current = self.root
-        while current.get_left() is not None:
-            current = current.get_left()
-        
-        return current.get_value()
+
+        while current.left != None:
+            current = current.left
+
+        return current.value
     
     def find_max(self):
         """
         Find the maximum value in the Binary Search Tree.
         
         Returns:
-            The maximum value, or -sys.maxsize if the tree is empty
+            The maximum value, or sys.maxsize if the tree is empty
         """
-        if self.root is None:
+        # TODO: Implement this method
+        # The maximum value is the rightmost node in the tree
+        if self.root == None:
             return sys.maxsize  # Python's equivalent of Integer.MAX_VALUE
-        
+
         current = self.root
-        while current.get_right() is not None:
-            current = current.get_right()
-        
-        return current.get_value()
+        while current.right != None:
+            current = current.right
+
+        return current.value
     
     def get_height(self):
         """
@@ -308,6 +318,8 @@ class BinarySearchTree:
         Returns:
             The height of the tree, or -1 if the tree is empty
         """
+        # TODO: Implement this method
+        # Use a helper method to calculate the height recursively
         return self._get_height(self.root)
     
     def _get_height(self, node):
@@ -320,13 +332,12 @@ class BinarySearchTree:
         Returns:
             The height of the subtree, or -1 if the subtree is empty
         """
-        if node is None:
+        # TODO: Implement this method
+        # If the node is None, return -1
+        # Otherwise, return 1 + the maximum of the heights of the left and right subtrees
+        if node == None:
             return -1
-        
-        left_height = self._get_height(node.get_left())
-        right_height = self._get_height(node.get_right())
-        
-        return 1 + max(left_height, right_height)
+        return 1 + max(self._get_height(node.left), self._get_height(node.right))
     
     def is_empty(self):
         """
