@@ -96,7 +96,84 @@ public class BinarySearchTree {
         // Find the node to delete
         // Handle different cases: node with no children, one child, or two children
         // Return true if the value was found and deleted, false otherwise
-        return false;
+
+        if (!search(value)) {
+            return false;
+        }
+
+        Node current = root;
+        Node prev = null;
+        while (current != null && current.getValue() != value) {
+            prev = current;
+            if (value <= current.getValue()) {
+                current = current.getLeft();
+            } else {
+                current = current.getRight();
+            }
+        }
+
+        if (prev == null) {
+            root = deleteNode(root);
+            return true;
+        }
+
+        deleteNode(current);
+        return true;
+    }
+
+    private void deleteNode(Node node) {
+        // 1. no children
+        
+        if (node.getLeft() == null && node.getRight() == null) {
+            if (prev.getLeft() == node) {
+                prev.setLeft(null);
+            } else {
+                prev.setRight(null);
+            }
+            return;
+        }
+        
+        // 2. one child
+        if (node.getLeft() == null) {
+            Node smallestNode = getSmallestNode(node.getRight());
+            if (prev.getLeft() == node) {
+                prev.setLeft(smallestNode);
+            } else {
+                prev.setRight(smallestNode);
+            }
+            return;
+        }
+        if (node.getRight() == null) {
+            Node smallestNode = getSmallestNode(node.getLeft());
+            if (prev.getLeft() == node) {
+                prev.setLeft(smallestNode);
+            } else {
+                prev.setRight(smallestNode);
+            }
+            return;
+        }
+
+        // 3. two children
+        Node smallestNode = getSmallestNode(node.getLeft());
+        if (prev != null) {
+            if ( prev.getLeft() == node) {
+                prev.setLeft(smallestNode);
+            } else {
+                prev.setRight(smallestNode);
+            }
+        }    
+    }
+
+    private Node getSmallestNode(Node node) {
+        Node prev = null;
+        while (node.getLeft() != null) {
+            prev = node;
+            node = node.getLeft();
+        }
+        if (prev != null) {
+            prev.setLeft(null);
+        }
+        return node;
     }
 
     /**
