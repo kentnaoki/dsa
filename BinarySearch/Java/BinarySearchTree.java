@@ -117,51 +117,51 @@ public class BinarySearchTree {
             return true;
         }
 
-        deleteNode(current);
+        if (prev.getLeft() == current) {
+            prev.setLeft(deleteNode(current));
+        } else {
+            prev.setRight(deleteNode(current));
+        }
         return true;
     }
 
-    private void deleteNode(Node node) {
+    private Node deleteNode(Node node) {
         // 1. no children
         
         if (node.getLeft() == null && node.getRight() == null) {
-            if (prev.getLeft() == node) {
-                prev.setLeft(null);
-            } else {
-                prev.setRight(null);
-            }
-            return;
+            return null;
         }
         
         // 2. one child
         if (node.getLeft() == null) {
-            Node smallestNode = getSmallestNode(node.getRight());
-            if (prev.getLeft() == node) {
-                prev.setLeft(smallestNode);
-            } else {
-                prev.setRight(smallestNode);
-            }
-            return;
+            return node.getRight();
         }
         if (node.getRight() == null) {
-            Node smallestNode = getSmallestNode(node.getLeft());
-            if (prev.getLeft() == node) {
-                prev.setLeft(smallestNode);
-            } else {
-                prev.setRight(smallestNode);
-            }
-            return;
+            return node.getLeft();
         }
 
         // 3. two children
-        Node smallestNode = getSmallestNode(node.getLeft());
-        if (prev != null) {
-            if ( prev.getLeft() == node) {
-                prev.setLeft(smallestNode);
-            } else {
-                prev.setRight(smallestNode);
-            }
-        }    
+        Node successor = findMinNode(node.getRight());
+        node.setValue(successor.getValue());
+        node.setRight(deleteMinNode(node.getRight()));
+        return node;
+    }
+
+    private Node findMinNode(Node node) {
+        while (node.getLeft() != null) {
+            node = node.getLeft();
+        }
+
+        return node;
+    }
+
+    private Node deleteMinNode(Node node) {
+        if (node.getLeft() == null) {
+            return node.getRight();
+        }
+
+        node.setLeft(deleteMinNode(node.getLeft()));
+        return node;
     }
 
     private Node getSmallestNode(Node node) {
@@ -195,6 +195,13 @@ public class BinarySearchTree {
         // TODO: Implement this method
         // If the node is null, return
         // Otherwise, traverse left subtree, visit the node, traverse right subtree
+        if (node == null) {
+            return;
+        }
+
+        inOrderTraversal(node.getLeft());
+        System.out.println(node.getValue());
+        inOrderTraversal(node.getRight());
     }
 
     /**
@@ -216,6 +223,13 @@ public class BinarySearchTree {
         // TODO: Implement this method
         // If the node is null, return
         // Otherwise, visit the node, traverse left subtree, traverse right subtree
+        if (node == null) {
+            return;
+        }
+
+        System.out.println(node.getValue());
+        preOrderTraversal(node.getLeft());
+        preOrderTraversal(node.getRight());
     }
 
     /**
@@ -237,6 +251,13 @@ public class BinarySearchTree {
         // TODO: Implement this method
         // If the node is null, return
         // Otherwise, traverse left subtree, traverse right subtree, visit the node
+        if (node == null) {
+            return;
+        }
+
+        postOrderTraversal(node.getLeft());
+        postOrderTraversal(node.getRight());
+        System.out.println(node.getValue());
     }
 
     /**
@@ -247,7 +268,21 @@ public class BinarySearchTree {
     public int findMin() {
         // TODO: Implement this method
         // The minimum value is the leftmost node in the tree
-        return Integer.MIN_VALUE;
+        if (root == null) {
+            return Integer.MIN_VALUE;
+        }
+
+        Node current = root;
+    
+        if (current.getLeft() == null) {
+            return root.getValue();
+        }
+
+        while (current.getLeft() != null) {
+            current = current.getLeft();
+        }
+
+        return current.getValue();
     }
 
     /**
@@ -258,7 +293,16 @@ public class BinarySearchTree {
     public int findMax() {
         // TODO: Implement this method
         // The maximum value is the rightmost node in the tree
-        return Integer.MAX_VALUE;
+        if (root == null) return Integer.MAX_VALUE;
+
+        Node current = root;
+
+        if (current.getRight() == null) return root.getValue();
+        while (current.getRight() != null) {
+            current = current.getRight();
+        }
+
+        return current.getValue();
     }
 
     /**
@@ -282,7 +326,10 @@ public class BinarySearchTree {
         // TODO: Implement this method
         // If the node is null, return -1
         // Otherwise, return 1 + the maximum of the heights of the left and right subtrees
-        return -1;
+        if (node == null) {
+            return -1;
+        }
+        return 1 + Math.max(getHeight(node.getLeft()), getHeight(node.getRight()));
     }
 
     /**
