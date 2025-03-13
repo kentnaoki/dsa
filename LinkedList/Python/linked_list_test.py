@@ -2,14 +2,15 @@
 Test class for the LinkedList implementation.
 This class provides methods to test various operations of the LinkedList.
 """
-from LinkedList.Python.linked_list_template import LinkedListTemplate
-from LinkedList.Python.linked_list_solution import LinkedListSolution
+from linked_list_template import LinkedListTemplate
+from linked_list_solution import LinkedListSolution
+from linked_list import LinkedList
 import sys
 
 # Uncomment the line below to use your implementation
 # LinkedList = LinkedListTemplate
 # Comment the line below to use your implementation
-LinkedList = LinkedListSolution
+LinkedList = LinkedList
 
 def test_insert():
     """

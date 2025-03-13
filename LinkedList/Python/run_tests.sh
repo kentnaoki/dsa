@@ -15,7 +15,8 @@ elif [ -d "LinkedList/Python" ]; then
     python3 -m linked_list_test
 else
     # We're somewhere else, use absolute path
-    python3 -m LinkedList.Python.linked_list_test
+    cd "$(dirname "$0")"
+    python3 -m linked_list_test
 fi
 
 if [ $? -eq 0 ]; then

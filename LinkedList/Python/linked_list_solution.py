@@ -3,7 +3,7 @@ Complete implementation of a LinkedList.
 This class provides a reference solution for the LinkedList blueprint.
 You can use this as a guide if you get stuck with your implementation.
 """
-from LinkedList.Python.node import Node
+from node import Node
 import sys
 
 class LinkedListSolution:

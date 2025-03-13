@@ -3,7 +3,7 @@ LinkedList implementation.
 This class provides a blueprint for implementing a singly linked list with
 various operations like insert, delete, search, and traversal.
 """
-from LinkedList.Python.node import Node
+from node import Node
 import sys
 
 class LinkedListTemplate:
