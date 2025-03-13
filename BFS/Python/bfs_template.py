@@ -3,7 +3,7 @@ Breadth-First Search (BFS) implementation.
 This class provides a blueprint for implementing BFS on a graph.
 """
 from collections import deque
-from BFS.Python.node import Node
+from node import Node
 
 class BFSTemplate:
     def __init__(self):

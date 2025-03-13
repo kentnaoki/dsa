@@ -177,8 +177,26 @@ class LinkedList:
         # Otherwise, traverse to the node at position-1 and update its next pointer
         # Decrement the size
         # Return True if the deletion was successful, False otherwise
-        if position < 0 or position > self.size:
+        if position < 0 or position >= self.size:
             return False
+
+
+            
+        current = self.head
+        position_counter = 0
+        prev = None
+
+        while current != None:
+            if position_counter == position:
+                if prev == None:
+                    self.head = current.next
+                else:
+                    prev.next = current.next
+                self.size -= 1
+                return True
+            prev = current
+            current = current.next
+            position_counter += 1
         return False
     
     def search(self, value):
@@ -194,6 +212,16 @@ class LinkedList:
         # TODO: Implement this method
         # Traverse the list and check if any node has the specified value
         # Return True if the value is found, False otherwise
+        if self.head == None:
+            return False
+
+        current = self.head
+
+        while current != None:
+            if current.value == value:
+                return True
+            current = current.next
+
         return False
     
     def get_value_at_position(self, position):
@@ -210,7 +238,19 @@ class LinkedList:
         # Check if the position is valid (0 <= position < size)
         # Traverse to the node at the specified position and return its value
         # Return sys.maxsize * -1 if the position is invalid
-        return sys.maxsize * -1  # Python's equivalent of Integer.MIN_VALUE
+        if position < 0 or position >= self.size:
+            return sys.maxsize * -1  # Python's equivalent of Integer.MIN_VALUE
+
+        position_counter = 0
+        current = self.head
+
+        while current != None:
+            if position == position_counter:
+                return current.value
+            current = current.next
+            position_counter += 1
+
+        return sys.maxsize * -1
     
     def reverse(self):
         """
@@ -218,7 +258,15 @@ class LinkedList:
         """
         # TODO: Implement this method
         # Reverse the list by changing the next pointers of each node
-        pass
+        prev = None
+        current = self.head
+
+        while current != None:
+            next_node = current.next
+            current.next = prev
+            prev = current
+            current = next_node
+        self.head = prev
     
     def has_cycle(self):
         """
@@ -230,6 +278,17 @@ class LinkedList:
         # TODO: Implement this method
         # Use Floyd's Cycle-Finding Algorithm (Tortoise and Hare)
         # Return True if a cycle is detected, False otherwise
+        visited = [];
+
+        if self.head == None:
+            return False
+
+        current = self.head
+        while current != None:
+            if current in visited:
+                return True
+            visited.append(current)
+            current = current.next
         return False
     
     def find_middle(self):
@@ -242,7 +301,17 @@ class LinkedList:
         # TODO: Implement this method
         # Use the slow and fast pointer technique to find the middle node
         # Return the middle node, or None if the list is empty
-        return None
+        #
+        if self.head == None:
+            return None
+
+        slow = self.head
+        fast = self.head
+
+        while fast != None and fast.next != None:
+            fast = fast.next.next
+            slow = slow.next
+        return slow
     
     def print_list(self):
         """

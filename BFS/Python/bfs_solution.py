@@ -4,7 +4,7 @@ This class provides a reference solution for the BFS blueprint.
 You can use this as a guide if you get stuck with your implementation.
 """
 from collections import deque
-from BFS.Python.node import Node
+from node import Node
 
 class BFSSolution:
     def __init__(self):

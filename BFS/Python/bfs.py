@@ -1,222 +1,265 @@
 """
-Breadth-First Search implementation.
-This class provides a blueprint for implementing BFS with
-various operations like traversal, path finding, and connected components.
+Breadth-First Search (BFS) implementation.
+This class provides a blueprint for implementing BFS on a graph.
 """
-from BFS.Python.node import Node
 from collections import deque
+from node import Node
 
 class BFS:
-    def __init__(self, start_node):
+    def __init__(self):
         """
-        Constructor to create a BFS instance with a start node.
+        Constructor to create a new BFS instance.
+        """
+        self.nodes = []  # List of all nodes in the graph
+    
+    def add_node(self, value):
+        """
+        Add a new node to the graph.
         
         Args:
-            start_node: The starting node for BFS traversal
-        """
-        self.start_node = start_node
-    
-    def get_start_node(self):
-        """
-        Get the start node.
-        
+            value: The value to be stored in the new node
+            
         Returns:
-            The start node
+            The newly created node
         """
-        return self.start_node
+        node = Node(value)
+        self.nodes.append(node)
+        return node
     
-    def set_start_node(self, start_node):
+    def add_edge(self, node1, node2):
         """
-        Set the start node.
+        Add an edge between two nodes in the graph.
         
         Args:
-            start_node: The new start node
+            node1: First node
+            node2: Second node
         """
-        self.start_node = start_node
+        node1.add_neighbor(node2)
+        node2.add_neighbor(node1)  # For undirected graph
     
-    def traverse(self):
+    def get_nodes(self):
         """
-        Perform a BFS traversal starting from the start node.
+        Get all nodes in the graph.
         
         Returns:
-            A list of nodes in BFS traversal order
+            List of all nodes
         """
-        if self.start_node is None:
+        return self.nodes
+    
+    def clear(self):
+        """
+        Clear all nodes from the graph.
+        """
+        self.nodes.clear()
+    
+    def reset_visited(self):
+        """
+        Reset visited status of all nodes.
+        """
+        for node in self.nodes:
+            node.reset_visited()
+    
+    def bfs_traversal(self, start_node):
+        """
+        Perform BFS traversal starting from the given node.
+        
+        Args:
+            start_node: The node to start BFS from
+            
+        Returns:
+            List of values in BFS order
+        """
+        # TODO: Implement this method
+        # 1. Check if start_node is None, return empty list if it is
+        # 2. Create a result list to store the traversal order
+        # 3. Create a queue and add the start_node to it
+        # 4. Mark the start_node as visited
+        # 5. While the queue is not empty:
+        #    a. Dequeue a node
+        #    b. Add its value to the result list
+        #    c. For each unvisited neighbor:
+        #       i. Mark it as visited
+        #       ii. Enqueue it
+        # 6. Return the result list
+        #
+        if start_node == None:
             return []
-        
+
+        visited = []
         result = []
-        visited = set()
-        queue = deque([self.start_node])
-        visited.add(self.start_node)
-        
-        while queue:
-            node = queue.popleft()
-            result.append(node)
-            
-            for neighbor in node.get_neighbors():
-                if neighbor not in visited:
-                    visited.add(neighbor)
-                    queue.append(neighbor)
-        
+        queue = deque()
+        queue.append(start_node)
+
+        visited.append(start_node)
+        result.append(start_node.value)
+
+        while len(queue) != 0:
+            current = queue.popleft()
+
+            for neighbor_node in current.neighbors:
+                if neighbor_node not in visited:
+                    queue.append(neighbor_node)
+                    visited.append(neighbor_node)
+                    result.append(neighbor_node.value)
         return result
+
     
-    def find_shortest_path(self, target_value):
+    def find_path(self, start_node, end_node):
         """
-        Find the shortest path from the start node to the target node.
+        Find a path between start_node and end_node using BFS.
         
         Args:
-            target_value: The value of the target node
+            start_node: Starting node
+            end_node: Target node
             
         Returns:
-            A list of nodes representing the shortest path, or an empty list if no path exists
+            List of nodes representing the path, or empty list if no path exists
         """
-        if self.start_node is None:
+        # TODO: Implement this method
+        # 1. Check if start_node or end_node is None, return empty list if either is
+        # 2. Reset visited status of all nodes
+        # 3. Create a queue and add a tuple of (start_node, [start_node]) to it
+        #    (the second element is the path so far)
+        # 4. Mark the start_node as visited
+        # 5. While the queue is not empty:
+        #    a. Dequeue a tuple (current_node, path)
+        #    b. If current_node is the end_node, return the path (convert nodes to values)
+        #    c. For each unvisited neighbor:
+        #       i. Mark it as visited
+        #       ii. Create a new path by appending the neighbor to the current path
+        #       iii. Enqueue a tuple of (neighbor, new_path)
+        # 6. Return an empty list if no path is found
+        #
+        if start_node is None or end_node is None:
             return []
-        
-        visited = set()
-        queue = deque([(self.start_node, [self.start_node])])
-        visited.add(self.start_node)
-        
-        while queue:
-            node, path = queue.popleft()
-            
-            if node.get_value() == target_value:
-                return path
-            
-            for neighbor in node.get_neighbors():
-                if neighbor not in visited:
-                    visited.add(neighbor)
-                    new_path = path.copy()
-                    new_path.append(neighbor)
-                    queue.append((neighbor, new_path))
-        
-        return []  # No path found
-    
-    def has_path(self, target_value):
-        """
-        Check if there is a path from the start node to a node with the target value.
-        
-        Args:
-            target_value: The value to search for
-            
-        Returns:
-            True if a path exists, False otherwise
-        """
-        if self.start_node is None:
-            return False
-        
-        visited = set()
-        queue = deque([self.start_node])
-        visited.add(self.start_node)
-        
-        while queue:
-            node = queue.popleft()
-            
-            if node.get_value() == target_value:
-                return True
-            
-            for neighbor in node.get_neighbors():
-                if neighbor not in visited:
-                    visited.add(neighbor)
-                    queue.append(neighbor)
-        
-        return False
-    
-    def find_connected_components(self, all_nodes):
-        """
-        Find all connected components in the graph.
-        
-        Args:
-            all_nodes: A list of all nodes in the graph
-            
-        Returns:
-            A list of lists, where each inner list represents a connected component
-        """
-        if not all_nodes:
+
+        visited = []
+        queue = deque()
+        queue.append(start_node)
+        visited.append(start_node)
+        parentMap = {}
+        found = False
+        parentMap[start_node] = None
+
+        while len(queue) != 0:
+            current = queue.popleft()
+
+            if current == end_node:
+                found = True
+                break;
+
+            for neighbor_node in current.neighbors:
+                if neighbor_node not in visited:
+                    parentMap[neighbor_node] = current
+                    queue.append(neighbor_node)
+                    visited.append(neighbor_node)
+
+        if not found:
             return []
-        
-        components = []
-        visited = set()
-        
-        for node in all_nodes:
-            if node not in visited:
-                component = []
-                queue = deque([node])
-                visited.add(node)
-                
-                while queue:
-                    current = queue.popleft()
-                    component.append(current)
-                    
-                    for neighbor in current.get_neighbors():
-                        if neighbor not in visited:
-                            visited.add(neighbor)
-                            queue.append(neighbor)
-                
-                components.append(component)
-        
-        return components
+
+
+        path = []
+        while current != None:
+            path.insert(0, current.value)
+            current = parentMap[current]
+
+        return path
     
-    def find_levels(self):
+    def find_level(self, start_node, target_value):
         """
-        Find the level (distance) of each node from the start node.
-        
-        Returns:
-            A dictionary mapping nodes to their levels
-        """
-        if self.start_node is None:
-            return {}
-        
-        levels = {}
-        visited = set()
-        queue = deque([(self.start_node, 0)])
-        visited.add(self.start_node)
-        
-        while queue:
-            node, level = queue.popleft()
-            levels[node] = level
-            
-            for neighbor in node.get_neighbors():
-                if neighbor not in visited:
-                    visited.add(neighbor)
-                    queue.append((neighbor, level + 1))
-        
-        return levels
-    
-    def is_bipartite(self, all_nodes):
-        """
-        Check if the graph is bipartite (can be divided into two sets
-        such that no two nodes within the same set are adjacent).
+        Find the level (distance) of a node with target_value from start_node.
         
         Args:
-            all_nodes: A list of all nodes in the graph
+            start_node: Starting node
+            target_value: Value to search for
+            
+        Returns:
+            Level of the target node, or -1 if not found
+        """
+        # TODO: Implement this method
+        # 1. Check if start_node is None, return -1 if it is
+        # 2. Reset visited status of all nodes
+        # 3. Create a queue and add a tuple of (start_node, 0) to it
+        #    (the second element is the level)
+        # 4. Mark the start_node as visited
+        # 5. While the queue is not empty:
+        #    a. Dequeue a tuple (current_node, level)
+        #    b. If current_node's value is the target_value, return the level
+        #    c. For each unvisited neighbor:
+        #       i. Mark it as visited
+        #       ii. Enqueue a tuple of (neighbor, level + 1)
+        # 6. Return -1 if the target_value is not found
+        if start_node == None:
+            return -1
+
+        queue = deque()
+        visited = []
+
+        queue.append(start_node)
+        visited.append(start_node)
+
+        level = 0
+
+        while len(queue) > 0:
+            level_size = len(queue)
+            for i in range(level_size):
+                current = queue.popleft()
+
+                for neighbor_node in current.neighbors:
+                    if current.value == target_value:
+                        return level
+                    if neighbor_node not in visited:
+                        queue.append(neighbor_node)
+                        visited.append(neighbor_node)
+            level += 1
+        return -1
+
+            
+    def count_connected_components(self):
+        """
+        Count the number of connected components in the graph.
+        
+        Returns:
+            Number of connected components
+        """
+        # TODO: Implement this method
+        # 1. Check if there are no nodes, return 0 if there aren't
+        # 2. Reset visited status of all nodes
+        # 3. Initialize a count to 0
+        # 4. For each node in the graph:
+        #    a. If the node is not visited:
+        #       i. Perform BFS traversal starting from this node
+        #          (this will mark all nodes in the component as visited)
+        #       ii. Increment the count
+        # 5. Return the count
+        return 0
+    
+    def is_bipartite(self, start_node):
+        """
+        Check if the graph is bipartite (can be colored with two colors).
+        
+        Args:
+            start_node: Starting node for the check
             
         Returns:
             True if the graph is bipartite, False otherwise
         """
-        if not all_nodes:
-            return True
-        
-        # Use 0 and 1 to represent the two sets
-        colors = {}
-        
-        for node in all_nodes:
-            if node not in colors:
-                # Start BFS from this node
-                queue = deque([node])
-                colors[node] = 0
-                
-                while queue:
-                    current = queue.popleft()
-                    current_color = colors[current]
-                    
-                    for neighbor in current.get_neighbors():
-                        if neighbor not in colors:
-                            # Assign the opposite color to the neighbor
-                            colors[neighbor] = 1 - current_color
-                            queue.append(neighbor)
-                        elif colors[neighbor] == current_color:
-                            # If the neighbor has the same color, the graph is not bipartite
-                            return False
-        
+        # TODO: Implement this method
+        # 1. Check if start_node is None, return True if it is
+        # 2. Reset visited status of all nodes
+        # 3. Create a dictionary to store colors (True/False) for each node
+        # 4. Assign a color (True) to the start_node
+        # 5. Create a queue and add the start_node to it
+        # 6. Mark the start_node as visited
+        # 7. While the queue is not empty:
+        #    a. Dequeue a node
+        #    b. Get the color of the current node
+        #    c. For each neighbor:
+        #       i. If the neighbor is not colored:
+        #          - Assign the opposite color to the neighbor
+        #          - Mark it as visited
+        #          - Enqueue it
+        #       ii. If the neighbor is already colored with the same color as the current node:
+        #           - Return False (not bipartite)
+        # 8. Return True if all checks pass
         return True

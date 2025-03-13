@@ -2,13 +2,14 @@
 Test class for the BFS implementation.
 This class provides methods to test various operations of the BFS algorithm.
 """
-from BFS.Python.bfs_template import BFSTemplate
-from BFS.Python.bfs_solution import BFSSolution
+from bfs_template import BFSTemplate
+from bfs_solution import BFSSolution
+from bfs import BFS
 
 # Uncomment the line below to use your implementation
 # BFS = BFSTemplate
 # Comment the line below to use your implementation
-BFS = BFSSolution
+BFS = BFS
 
 def test_bfs_traversal():
     """
