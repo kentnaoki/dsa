@@ -1,7 +1,11 @@
 package BFS.Java;
 
 import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 import java.util.Queue;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -49,8 +53,28 @@ public class BFS {
         // TODO: Implement this method
         // Use a queue to perform BFS traversal
         // Return an array of nodes in BFS traversal order
-        return new Node[0];
+        Queue<Node> queue = new LinkedList<>();
+        List<Node> visited = new ArrayList<>();
+
+        if (startNode == null) {
+            return new Node[0];
+        }
+        queue.offer(startNode);
+        visited.add(startNode);
+        while (!queue.isEmpty()) {
+            Node node = queue.poll();
+
+            for (Node neighbor : node.getNeighbors()) {
+                if (!visited.contains(neighbor)) {
+                    visited.add(neighbor);
+                    queue.offer(neighbor);
+                }
+            }
+        }
+        
+        return visited.toArray(new Node[0]);
     }
+
 
     /**
      * Find the shortest path from the start node to the target node.
@@ -62,7 +86,53 @@ public class BFS {
         // TODO: Implement this method
         // Use BFS to find the shortest path
         // Return an array of nodes representing the path
-        return new Node[0];
+        if (startNode == null) {
+            return new Node[0];
+        }
+        
+        Queue<Node> queue = new LinkedList<>();
+        List<Node> visited = new ArrayList<>();
+        Map<Node, Node> parentsMap = new HashMap<>();
+        
+        queue.offer(startNode);
+        visited.add(startNode);
+        parentsMap.put(startNode, null);
+
+        Node targetNode = null;
+        boolean found = false;
+
+        while (!queue.isEmpty()) {
+            Node current = queue.poll();
+
+            if (current.getValue() == targetValue) {
+                targetNode = current;
+                found = true;
+                break;
+            }
+
+            for (Node neighborNode : current.getNeighbors()) {
+                if (!visited.contains(neighborNode)) {
+                    queue.offer(neighborNode);
+                    visited.add(neighborNode);
+                    parentsMap.put(neighborNode, current);
+                }
+            }
+        }
+
+        if (!found) {
+            return new Node[0];
+        }
+
+        List<Node> path = new ArrayList<>();
+
+        Node current = targetNode;
+        while (current != null) {
+            path.add(0, current);
+            current = parentsMap.get(current);
+        }
+
+        return path.toArray(new Node[0]);
+
     }
 
     /**
@@ -74,6 +144,26 @@ public class BFS {
     public boolean hasPath(int targetValue) {
         // TODO: Implement this method
         // Use BFS to check if there is a path to the target
+        Queue<Node> queue = new LinkedList<>();
+        List<Node> visited = new ArrayList<>();
+
+        queue.offer(startNode);
+        visited.add(startNode);
+
+        while (!queue.isEmpty()) {
+            Node current = queue.poll();
+
+            if (current.getValue() == targetValue) {
+                return true;
+            }
+
+            for (Node neighborNode : current.getNeighbors()) {
+                if (!visited.contains(neighborNode)) {
+                    queue.offer(neighborNode);
+                    visited.add(neighborNode);
+                }
+            }
+        }
         return false;
     }
 
@@ -99,7 +189,36 @@ public class BFS {
         // TODO: Implement this method
         // Use BFS to find the level of each node
         // Return an array of integers representing the level of each node
-        return new int[0];
+        if (startNode == null) {
+            return new int[0];
+        }
+
+        Queue<Node> queue = new LinkedList<>();
+        List<Node> visited = new ArrayList<>();
+        List<Integer> levels = new ArrayList<>();
+
+        queue.offer(startNode);
+        visited.add(startNode);
+        int level = 0;
+
+        while (!queue.isEmpty()) {
+            int levelSize = queue.size();
+            for (int i = 0; i < levelSize; i++) {
+
+                Node current = queue.poll();
+                levels.add(level);
+                for (Node neighborNode : current.getNeighbors()) {
+                    if (!visited.contains(neighborNode)) {
+                        queue.offer(neighborNode);
+                        visited.add(neighborNode);
+                    }
+                }
+                
+            } 
+            level++;
+        }
+
+        return levels.stream().mapToInt(Integer::valueOf).toArray();
     }
 
     /**

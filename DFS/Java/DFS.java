@@ -50,7 +50,23 @@ public class DFS {
         // TODO: Implement this method
         // Use a stack or recursion to perform DFS traversal
         // Return an array of nodes in DFS traversal order
-        return new Node[0];
+        if (startNode == null) {
+            return new Node[0];
+        }
+        List<Node> visited = new ArrayList<>();
+        visited.add(startNode);
+        return traverse(startNode, visited);
+    }
+
+    private Node[] traverse(Node node, List<Node> visited) {
+        Node[] neighborNodes = node.getNeighbors();
+        for (Node neighborNode : neighborNodes) {
+            if (!visited.contains(neighborNode)) {
+                visited.add(neighborNode);
+                traverse(neighborNode, visited);
+            }
+        }
+        return visited.toArray(new Node[visited.size()]);
     }
 
     /**
@@ -63,7 +79,39 @@ public class DFS {
         // TODO: Implement this method
         // Use DFS to find a path to the target
         // Return an array of nodes representing the path
+        Set<Node> visited = new HashSet<>();
+        List<Node> path = new ArrayList<>();
+
+        if (startNode != null) {
+            visited.add(startNode);
+            if (findPath(startNode, visited, path, targetValue)) {
+                return path.toArray(new Node[path.size()]);
+            }
+        }
+
         return new Node[0];
+    }
+
+    private boolean findPath(Node node, Set<Node> visited, List<Node> tempList, int targetValue) {
+        tempList.add(node);
+
+        if (node.getValue() == targetValue) {
+            return true;
+        }
+
+        Node[] neighborNodes = node.getNeighbors();
+
+        for (Node neighborNode : neighborNodes) {
+            if (!visited.contains(neighborNode)) {
+                visited.add(neighborNode);
+                if (findPath(neighborNode, visited, tempList, targetValue)) {
+                    return true;
+                }
+            }
+        }
+
+        tempList.remove(node);
+        return false;
     }
 
     /**
@@ -75,8 +123,23 @@ public class DFS {
     public boolean hasPath(int targetValue) {
         // TODO: Implement this method
         // Use DFS to check if there is a path to the target
-        return false;
+        return hasPath(startNode, targetValue);
     }
+
+    private boolean hasPath(Node node, int targetValue) {
+        if (node == null) {
+            return false;
+        }
+
+        if (node.getValue() == targetValue) {
+            return true;
+        }
+
+        for (Node neighborNode : node.getNeighbors()) {
+            return hasPath(neighborNode, targetValue);
+        }
+        return false;
+    }    
 
     /**
      * Detect if there is a cycle in the graph.
@@ -87,6 +150,34 @@ public class DFS {
     public boolean hasCycle(Node[] allNodes) {
         // TODO: Implement this method
         // Use DFS to detect cycles in the graph
+        Set<Node> visited = new HashSet<>();
+        Set<Node> recursionStack = new HashSet<>();
+
+        for (Node node : allNodes) {
+            if (!visited.contains(node)) {
+                if (hasCycle(node, visited, recursionStack)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private boolean hasCycle(Node node, Set<Node> visited, Set<Node> recursionStack) {
+        visited.add(node);
+        recursionStack.add(node);
+
+        for (Node neighbor : node.getNeighbors()) {
+            if (!visited.contains(neighbor)) {
+                if (hasCycle(neighbor, visited, recursionStack)) {
+                    return true;
+                }
+            } else if (recursionStack.contains(neighbor)) {
+                return true;
+            }
+        }
+
+        recursionStack.remove(node);
         return false;
     }
 
@@ -100,7 +191,37 @@ public class DFS {
         // TODO: Implement this method
         // Use DFS to perform a topological sort
         // Return an array of nodes in topological order
-        return new Node[0];
+        if (hasCycle(allNodes)) {
+            return new Node[0];
+        }
+
+        Set<Node> visited = new HashSet<>();
+        Stack<Node> stack = new Stack<>();
+
+        for (Node node : allNodes) {
+            if (!visited.contains(node)) {
+                topologicalSort(node, visited, stack);
+            }
+        }
+
+        Node[] array = new Node[stack.size()];
+
+        for (int i = 0; i < array.length; i++) {
+            array[i] = stack.pop();
+        }
+        return array;
+    }
+
+    private void topologicalSort(Node node, Set<Node> visited, Stack<Node> stack) {
+        visited.add(node);
+
+        for (Node neighbor : node.getNeighbors()) {
+            if (!visited.contains(neighbor)) {
+                topologicalSort(neighbor, visited, stack);
+            }
+        }
+        stack.push(node);
+
     }
 
     /**
