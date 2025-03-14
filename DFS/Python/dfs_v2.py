@@ -163,7 +163,12 @@ class DFSV2:
         # 4. Call the recursive helper method to find a path
         # 5. If a path is found, convert the nodes to values and return
         # 6. Otherwise, return an empty list
-        return []
+        if start_node == None or end_node == None:
+            return []
+
+        path = []
+        self._find_path_recursive(start_node, end_node, path)
+        return path
     
     def _find_path_recursive(self, current, end, path):
         """
@@ -186,6 +191,7 @@ class DFSV2:
         #    b. If a path is found, return True
         # 5. If no path is found through any neighbor, remove the current node from the path (backtrack)
         # 6. Return False
+
         return False
     
     def detect_cycle(self):
