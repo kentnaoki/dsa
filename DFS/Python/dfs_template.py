@@ -2,7 +2,7 @@
 Depth-First Search (DFS) implementation.
 This class provides a blueprint for implementing DFS on a graph.
 """
-from DFS.Python.node import Node
+from node import Node
 
 class DFSTemplate:
     def __init__(self):

@@ -2,13 +2,14 @@
 Test class for the Sliding Window implementation.
 This class provides methods to test various sliding window algorithms.
 """
-from SlidingWindow.Python.sliding_window_template import SlidingWindowTemplate
-from SlidingWindow.Python.sliding_window_solution import SlidingWindowSolution
+from sliding_window_template import SlidingWindowTemplate
+from sliding_window_solution import SlidingWindowSolution
+from sliding_window import SlidingWindow
 
 # Uncomment the line below to use your implementation
 # SlidingWindow = SlidingWindowTemplate
 # Comment the line below to use your implementation
-SlidingWindow = SlidingWindowSolution
+SlidingWindow = SlidingWindow
 
 def test_max_sum_subarray():
     """

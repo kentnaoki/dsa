@@ -3,7 +3,7 @@ Complete implementation of Depth-First Search (DFS).
 This class provides a reference solution for the DFS blueprint.
 You can use this as a guide if you get stuck with your implementation.
 """
-from DFS.Python.node import Node
+from node import Node
 
 class DFSSolution:
     def __init__(self):

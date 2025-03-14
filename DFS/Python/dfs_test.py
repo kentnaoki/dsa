@@ -2,13 +2,14 @@
 Test class for the DFS implementation.
 This class provides methods to test various operations of the DFS algorithm.
 """
-from DFS.Python.dfs_template import DFSTemplate
-from DFS.Python.dfs_solution import DFSSolution
+from dfs_template import DFSTemplate
+from dfs_solution import DFSSolution
+from dfs import DFS
 
 # Uncomment the line below to use your implementation
 # DFS = DFSTemplate
 # Comment the line below to use your implementation
-DFS = DFSSolution
+DFS = DFS
 
 def test_dfs_traversal():
     """

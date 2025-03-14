@@ -1,418 +1,276 @@
 """
-Depth-First Search implementation.
-This class provides a blueprint for implementing DFS with
-various operations like traversal, path finding, and cycle detection.
+Depth-First Search (DFS) implementation.
+This class provides a blueprint for implementing DFS on a graph.
 """
-from DFS.Python.node import Node
+from node import Node
 from collections import deque
 
 class DFS:
-    def __init__(self, start_node):
+    def __init__(self):
         """
-        Constructor to create a DFS instance with a start node.
+        Constructor to create a new DFS instance.
+        """
+        self.nodes = []  # List of all nodes in the graph
+    
+    def add_node(self, value):
+        """
+        Add a new node to the graph.
         
         Args:
-            start_node: The starting node for DFS traversal
-        """
-        self.start_node = start_node
-    
-    def get_start_node(self):
-        """
-        Get the start node.
-        
+            value: The value to be stored in the new node
+            
         Returns:
-            The start node
+            The newly created node
         """
-        return self.start_node
+        node = Node(value)
+        self.nodes.append(node)
+        return node
     
-    def set_start_node(self, start_node):
+    def add_edge(self, node1, node2):
         """
-        Set the start node.
+        Add an edge between two nodes in the graph.
         
         Args:
-            start_node: The new start node
+            node1: First node
+            node2: Second node
         """
-        self.start_node = start_node
+        node1.add_neighbor(node2)
+        node2.add_neighbor(node1)  # For undirected graph
     
-    def traverse(self):
+    def get_nodes(self):
         """
-        Perform a DFS traversal starting from the start node.
+        Get all nodes in the graph.
         
         Returns:
-            A list of nodes in DFS traversal order
+            List of all nodes
         """
-        if self.start_node is None:
+        return self.nodes
+    
+    def clear(self):
+        """
+        Clear all nodes from the graph.
+        """
+        self.nodes.clear()
+    
+    def reset_visited(self):
+        """
+        Reset visited status of all nodes.
+        """
+        for node in self.nodes:
+            node.reset_visited()
+    
+    def dfs_traversal(self, start_node):
+        """
+        Perform DFS traversal starting from the given node.
+        
+        Args:
+            start_node: The node to start DFS from
+            
+        Returns:
+            List of values in DFS order
+        """
+        # TODO: Implement this method
+        # 1. Check if start_node is None, return empty list if it is
+        # 2. Create a result list to store the traversal order
+        # 3. Call the recursive helper method to perform DFS
+        # 4. Return the result list
+        if start_node == None:
             return []
-        
-        result = []
-        visited = set()
-        
-        self._dfs_traversal(self.start_node, visited, result)
-        
-        return result
+
+        visited = []
+
+        self._dfs_recursive(start_node, visited)
+
+        return [node.value for node in visited]
     
-    def _dfs_traversal(self, node, visited, result):
+    def _dfs_recursive(self, node, result):
         """
         Helper method for recursive DFS traversal.
         
         Args:
-            node: The current node
-            visited: Set of visited nodes
-            result: List to store the traversal result
+            node: Current node being visited
+            result: List to store the traversal order
         """
-        # Mark the current node as visited and add to result
-        visited.add(node)
+        # TODO: Implement this method
+        # 1. Check if node is None or already visited, return if it is
+        # 2. Mark the node as visited
+        # 3. Add the node's value to the result list
+        # 4. Recursively visit all unvisited neighbors
+        if node == None:
+            return
+
         result.append(node)
-        
-        # Recur for all the neighbors
-        for neighbor in node.get_neighbors():
-            if neighbor not in visited:
-                self._dfs_traversal(neighbor, visited, result)
-    
-    def find_path(self, target_value):
+        for neighbor_node in node.neighbors:
+            if neighbor_node not in result:
+                self._dfs_recursive(neighbor_node, result)
+    def dfs_iterative(self, start_node):
         """
-        Find a path from the start node to the target node.
+        Perform iterative DFS traversal starting from the given node.
         
         Args:
-            target_value: The value of the target node
+            start_node: The node to start DFS from
             
         Returns:
-            A list of nodes representing a path, or an empty list if no path exists
+            List of values in DFS order
         """
-        if self.start_node is None:
+        # TODO: Implement this method
+        # 1. Check if start_node is None, return empty list if it is
+        # 2. Create a result list to store the traversal order
+        # 3. Create a stack and add the start_node to it
+        # 4. Reset visited status of all nodes
+        # 5. While the stack is not empty:
+        #    a. Pop a node from the stack
+        #    b. If the node is not visited:
+        #       i. Mark it as visited
+        #       ii. Add its value to the result list
+        #       iii. Add all unvisited neighbors to the stack (in reverse order)
+        # 6. Return the result list
+        if start_node == None:
             return []
         
-        visited = set()
-        path = []
+        stack = deque()
+        visited = []
+
+        stack.append(start_node)
+
+        while len(stack) > 0:
+            current = stack.pop()
+            if current not in visited:
+                visited.append(current)
+
+                for neighbor_node in reversed(current.neighbors):
+                    if neighbor_node not in visited:
+                        stack.append(neighbor_node)
+        return [node.value for node in visited]
+
         
-        if self._dfs_path(self.start_node, target_value, visited, path):
-            return path
+    
+    def find_path(self, start_node, end_node):
+        """
+        Find a path between start_node and end_node using DFS.
         
+        Args:
+            start_node: Starting node
+            end_node: Target node
+            
+        Returns:
+            List of nodes representing the path, or empty list if no path exists
+        """
+        # TODO: Implement this method
+        # 1. Check if start_node or end_node is None, return empty list if either is
+        # 2. Reset visited status of all nodes
+        # 3. Create an empty path list
+        # 4. Call the recursive helper method to find a path
+        # 5. If a path is found, convert the nodes to values and return
+        # 6. Otherwise, return an empty list
         return []
     
-    def _dfs_path(self, node, target_value, visited, path):
+    def _find_path_recursive(self, current, end, path):
         """
-        Helper method for recursive DFS path finding.
+        Helper method for recursive path finding.
         
         Args:
-            node: The current node
-            target_value: The value to search for
-            visited: Set of visited nodes
-            path: List to store the path
+            current: Current node being visited
+            end: Target node
+            path: Current path being built
             
         Returns:
             True if a path is found, False otherwise
         """
-        # Mark the current node as visited and add to path
-        visited.add(node)
-        path.append(node)
-        
-        # If current node has the target value, return True
-        if node.get_value() == target_value:
-            return True
-        
-        # Recur for all the neighbors
-        for neighbor in node.get_neighbors():
-            if neighbor not in visited:
-                if self._dfs_path(neighbor, target_value, visited, path):
-                    return True
-        
-        # If no path is found, remove the current node from path
-        path.pop()
+        # TODO: Implement this method
+        # 1. Mark the current node as visited
+        # 2. Add the current node to the path
+        # 3. If the current node is the end node, return True
+        # 4. For each unvisited neighbor:
+        #    a. Recursively find a path from the neighbor to the end node
+        #    b. If a path is found, return True
+        # 5. If no path is found through any neighbor, remove the current node from the path (backtrack)
+        # 6. Return False
         return False
     
-    def has_path(self, target_value):
+    def detect_cycle(self):
         """
-        Check if there is a path from the start node to a node with the target value.
+        Detect if the graph contains a cycle.
         
-        Args:
-            target_value: The value to search for
-            
         Returns:
-            True if a path exists, False otherwise
+            True if a cycle is detected, False otherwise
         """
-        if self.start_node is None:
-            return False
-        
-        visited = set()
-        return self._dfs_has_path(self.start_node, target_value, visited)
-    
-    def _dfs_has_path(self, node, target_value, visited):
-        """
-        Helper method for recursive DFS path checking.
-        
-        Args:
-            node: The current node
-            target_value: The value to search for
-            visited: Set of visited nodes
-            
-        Returns:
-            True if a path is found, False otherwise
-        """
-        # Mark the current node as visited
-        visited.add(node)
-        
-        # If current node has the target value, return True
-        if node.get_value() == target_value:
-            return True
-        
-        # Recur for all the neighbors
-        for neighbor in node.get_neighbors():
-            if neighbor not in visited:
-                if self._dfs_has_path(neighbor, target_value, visited):
-                    return True
-        
+        # TODO: Implement this method
+        # 1. Reset visited status of all nodes
+        # 2. For each unvisited node in the graph:
+        #    a. Call the recursive helper method to detect a cycle
+        #    b. If a cycle is detected, return True
+        # 3. Return False if no cycle is detected
         return False
     
-    def has_cycle(self, all_nodes):
+    def _detect_cycle_recursive(self, current, parent):
         """
-        Detect if there is a cycle in the graph.
+        Helper method for recursive cycle detection.
         
         Args:
-            all_nodes: A list of all nodes in the graph
+            current: Current node being visited
+            parent: Parent node of the current node
             
         Returns:
             True if a cycle is detected, False otherwise
         """
-        if not all_nodes:
-            return False
-        
-        visited = set()
-        recursion_stack = set()
-        
-        for node in all_nodes:
-            if node not in visited:
-                if self._dfs_has_cycle(node, visited, recursion_stack):
-                    return True
-        
+        # TODO: Implement this method
+        # 1. Mark the current node as visited
+        # 2. For each neighbor of the current node:
+        #    a. If the neighbor is not visited:
+        #       i. Recursively check for a cycle from the neighbor
+        #       ii. If a cycle is detected, return True
+        #    b. If the neighbor is visited and not the parent, a cycle is detected, return True
+        # 3. Return False if no cycle is detected
         return False
     
-    def _dfs_has_cycle(self, node, visited, recursion_stack):
+    def topological_sort(self):
         """
-        Helper method for recursive DFS cycle detection.
+        Perform topological sort on a directed acyclic graph (DAG).
         
-        Args:
-            node: The current node
-            visited: Set of visited nodes
-            recursion_stack: Set of nodes in the current recursion stack
-            
         Returns:
-            True if a cycle is detected, False otherwise
+            List of values in topological order, or empty list if the graph is not a DAG
         """
-        # Mark the current node as visited and add to recursion stack
-        visited.add(node)
-        recursion_stack.add(node)
-        
-        # Recur for all the neighbors
-        for neighbor in node.get_neighbors():
-            # If the neighbor is not visited, recur for it
-            if neighbor not in visited:
-                if self._dfs_has_cycle(neighbor, visited, recursion_stack):
-                    return True
-            # If the neighbor is in the recursion stack, there is a cycle
-            elif neighbor in recursion_stack:
-                return True
-        
-        # Remove the current node from recursion stack
-        recursion_stack.remove(node)
-        return False
+        # TODO: Implement this method
+        # 1. Check if the graph has a cycle (not a DAG), return empty list if it does
+        # 2. Reset visited status of all nodes
+        # 3. Create a stack to store the topological order
+        # 4. For each unvisited node in the graph:
+        #    a. Call the recursive helper method to perform topological sort
+        # 5. Reverse the stack to get the topological order
+        # 6. Convert the nodes to values and return
+        return []
     
-    def topological_sort(self, all_nodes):
+    def _topological_sort_recursive(self, node, stack):
         """
-        Perform a topological sort of the graph.
+        Helper method for recursive topological sort.
         
         Args:
-            all_nodes: A list of all nodes in the graph
-            
+            node: Current node being visited
+            stack: Stack to store the topological order
+        """
+        # TODO: Implement this method
+        # 1. Mark the node as visited
+        # 2. For each unvisited neighbor:
+        #    a. Recursively perform topological sort from the neighbor
+        # 3. Add the node to the stack
+        pass
+    
+    def count_connected_components(self):
+        """
+        Count the number of connected components in the graph.
+        
         Returns:
-            A list of nodes in topological order, or an empty list if a cycle is detected
+            Number of connected components
         """
-        if not all_nodes:
-            return []
-        
-        # Check if the graph has a cycle
-        if self.has_cycle(all_nodes):
-            return []
-        
-        stack = []
-        visited = set()
-        
-        # Call the recursive helper function to store topological sort
-        for node in all_nodes:
-            if node not in visited:
-                self._dfs_topological_sort(node, visited, stack)
-        
-        # Reverse the stack to get the topological sort
-        return stack[::-1]
-    
-    def _dfs_topological_sort(self, node, visited, stack):
-        """
-        Helper method for recursive DFS topological sort.
-        
-        Args:
-            node: The current node
-            visited: Set of visited nodes
-            stack: List to store the topological sort
-        """
-        # Mark the current node as visited
-        visited.add(node)
-        
-        # Recur for all the neighbors
-        for neighbor in node.get_neighbors():
-            if neighbor not in visited:
-                self._dfs_topological_sort(neighbor, visited, stack)
-        
-        # Push current node to stack
-        stack.append(node)
-    
-    def find_strongly_connected_components(self, all_nodes):
-        """
-        Find all strongly connected components in the graph.
-        
-        Args:
-            all_nodes: A list of all nodes in the graph
-            
-        Returns:
-            A list of lists, where each inner list represents a strongly connected component
-        """
-        if not all_nodes:
-            return []
-        
-        # Step 1: Perform DFS and store nodes in order of finishing time
-        stack = []
-        visited = set()
-        
-        for node in all_nodes:
-            if node not in visited:
-                self._fill_order(node, visited, stack)
-        
-        # Step 2: Create a transpose graph (reverse all edges)
-        transpose = {node: [] for node in all_nodes}
-        
-        for node in all_nodes:
-            for neighbor in node.get_neighbors():
-                transpose[neighbor].append(node)
-        
-        # Step 3: Process nodes in order of finishing time
-        visited.clear()
-        components = []
-        
-        while stack:
-            node = stack.pop()
-            
-            if node not in visited:
-                component = []
-                self._dfs_util(node, visited, component, transpose)
-                components.append(component)
-        
-        return components
-    
-    def _fill_order(self, node, visited, stack):
-        """
-        Helper method to fill the stack with nodes in order of finishing time.
-        
-        Args:
-            node: The current node
-            visited: Set of visited nodes
-            stack: List to store nodes in order of finishing time
-        """
-        visited.add(node)
-        
-        for neighbor in node.get_neighbors():
-            if neighbor not in visited:
-                self._fill_order(neighbor, visited, stack)
-        
-        stack.append(node)
-    
-    def _dfs_util(self, node, visited, component, transpose):
-        """
-        Helper method for DFS on the transpose graph.
-        
-        Args:
-            node: The current node
-            visited: Set of visited nodes
-            component: List to store the current component
-            transpose: Dictionary representing the transpose graph
-        """
-        visited.add(node)
-        component.append(node)
-        
-        for neighbor in transpose[node]:
-            if neighbor not in visited:
-                self._dfs_util(neighbor, visited, component, transpose)
-    
-    def find_articulation_points(self, all_nodes):
-        """
-        Find the articulation points (cut vertices) in the graph.
-        
-        Args:
-            all_nodes: A list of all nodes in the graph
-            
-        Returns:
-            A list of nodes that are articulation points
-        """
-        if not all_nodes:
-            return []
-        
-        articulation_points = set()
-        visited = set()
-        disc = {}  # Discovery time
-        low = {}   # Earliest visited vertex
-        parent = {}  # Parent in DFS tree
-        time = [0]  # Time counter (as a list to make it mutable)
-        
-        for node in all_nodes:
-            if node not in visited:
-                self._dfs_articulation_points(node, visited, disc, low, parent, articulation_points, time)
-        
-        return list(articulation_points)
-    
-    def _dfs_articulation_points(self, node, visited, disc, low, parent, articulation_points, time):
-        """
-        Helper method for finding articulation points using DFS.
-        
-        Args:
-            node: The current node
-            visited: Set of visited nodes
-            disc: Dictionary of discovery times
-            low: Dictionary of lowest discovery times
-            parent: Dictionary of parent nodes
-            articulation_points: Set to store articulation points
-            time: Time counter (as a list to make it mutable)
-        """
-        # Count of children in DFS tree
-        children = 0
-        
-        # Mark the current node as visited
-        visited.add(node)
-        
-        # Initialize discovery time and low value
-        disc[node] = time[0]
-        low[node] = time[0]
-        time[0] += 1
-        
-        # Recur for all the neighbors
-        for neighbor in node.get_neighbors():
-            # If neighbor is not visited yet, then make it a child of node in DFS tree and recur for it
-            if neighbor not in visited:
-                children += 1
-                parent[neighbor] = node
-                
-                self._dfs_articulation_points(neighbor, visited, disc, low, parent, articulation_points, time)
-                
-                # Check if the subtree rooted with neighbor has a connection to one of the ancestors of node
-                low[node] = min(low[node], low[neighbor])
-                
-                # node is an articulation point in following cases:
-                
-                # (1) node is root of DFS tree and has two or more children
-                if node not in parent and children > 1:
-                    articulation_points.add(node)
-                
-                # (2) If node is not root and low value of one of its children is more than or equal to discovery value of node
-                if node in parent and low[neighbor] >= disc[node]:
-                    articulation_points.add(node)
-            
-            # Update low value of node for parent function calls
-            elif neighbor != parent.get(node):
-                low[node] = min(low[node], disc[neighbor])
+        # TODO: Implement this method
+        # 1. Check if there are no nodes, return 0 if there aren't
+        # 2. Reset visited status of all nodes
+        # 3. Initialize a count to 0
+        # 4. For each node in the graph:
+        #    a. If the node is not visited:
+        #       i. Perform DFS traversal starting from this node
+        #          (this will mark all nodes in the component as visited)
+        #       ii. Increment the count
+        # 5. Return the count
+        return 0

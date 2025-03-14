@@ -1,318 +1,198 @@
 """
-SlidingWindow implementation.
-This class provides a blueprint for implementing sliding window algorithms with
-various operations for solving different types of problems.
+Sliding Window algorithm implementation.
+This class provides a blueprint for implementing various sliding window problems.
 """
-from SlidingWindow.Python.node import Node
-from collections import deque, defaultdict
+from collections import defaultdict, deque
+import sys
 
 class SlidingWindow:
-    def find_max_sum_subarray(self, arr, k):
+    def __init__(self):
         """
-        Find the maximum sum subarray of size k.
+        Constructor to create a new SlidingWindow instance.
+        """
+        pass
+    
+    def max_sum_subarray(self, arr, k):
+        """
+        Find the maximum sum of a subarray of size k.
         
         Args:
-            arr: The input array
-            k: The size of the window
+            arr: Input array of integers
+            k: Size of the sliding window
             
         Returns:
-            The maximum sum of any subarray of size k
+            Maximum sum of a subarray of size k
         """
-        if not arr or k <= 0 or k > len(arr):
+        # TODO: Implement this method
+        # 1. Check if the input array is valid and k is within bounds
+        # 2. Initialize variables for max_sum and window_sum
+        # 3. Calculate the sum of the first window
+        # 4. Slide the window and update max_sum
+        # 5. Return the maximum sum
+        if arr == None or len(arr) < k:
             return 0
-        
-        window_sum = 0
-        max_sum = float('-inf')
-        
-        # First window
-        for i in range(k):
-            window_sum += arr[i]
-        
-        max_sum = window_sum
-        
-        # Slide the window
-        for i in range(k, len(arr)):
-            window_sum = window_sum + arr[i] - arr[i - k]
-            max_sum = max(max_sum, window_sum)
-        
+        left = 0
+        right = k - 1
+
+        max_sum = -sys.maxsize - 1
+        while right < len(arr):
+            max_sum = max(max_sum, sum(arr[left:right+1]))
+            left += 1
+            right += 1
         return max_sum
+
     
-    def find_min_subarray_length(self, arr, target):
+    def min_size_subarray_sum(self, arr, target_sum):
         """
-        Find the smallest subarray with a sum greater than or equal to the target.
+        Find the minimum size subarray with a sum at least target_sum.
         
         Args:
-            arr: The input array
-            target: The target sum
+            arr: Input array of positive integers
+            target_sum: Target sum
             
         Returns:
-            The length of the smallest subarray with sum >= target, or 0 if no such subarray exists
+            Minimum size of a subarray with sum at least target_sum, or 0 if no such subarray exists
         """
-        if not arr or target <= 0:
+        # TODO: Implement this method
+        # 1. Check if the input array is valid and target_sum is positive
+        # 2. Initialize variables for min_length, window_sum, and start pointer
+        # 3. Slide the window and update min_length
+        # 4. Return the minimum length, or 0 if no valid subarray is found
+        if arr == None:
             return 0
-        
+
+        left = 0
         window_sum = 0
-        min_length = float('inf')
-        window_start = 0
-        
-        for window_end in range(len(arr)):
-            window_sum += arr[window_end]
-            
-            # Shrink the window as small as possible while maintaining the sum >= target
-            while window_sum >= target:
-                min_length = min(min_length, window_end - window_start + 1)
-                window_sum -= arr[window_start]
-                window_start += 1
-        
-        return min_length if min_length != float('inf') else 0
+        min_size = sys.maxsize
+
+        for right in range(len(arr)):
+            window_sum += arr[right]
+            while window_sum >= target_sum:
+                min_size = min(min_size, right - left + 1)
+                window_sum -= arr[left]
+                left += 1
+
+        return min_size if min_size != sys.maxsize else 0
     
-    def find_longest_substring_k_distinct(self, s, k):
+    def longest_substring_without_repeating_chars(self, s):
         """
-        Find the longest substring with at most k distinct characters.
+        Find the length of the longest substring without repeating characters.
         
         Args:
-            s: The input string
-            k: The maximum number of distinct characters
+            s: Input string
             
         Returns:
-            The length of the longest substring with at most k distinct characters
+            Length of the longest substring without repeating characters
         """
-        if not s or k <= 0:
+        # TODO: Implement this method
+        # 1. Check if the input string is valid
+        # 2. Initialize variables for max_length, start pointer, and character index map
+        # 3. Slide the window and update max_length
+        # 4. Return the maximum length
+        if s == None:
             return 0
-        
-        char_frequency = {}
-        window_start = 0
+
+        left = 0
         max_length = 0
-        
-        for window_end in range(len(s)):
-            right_char = s[window_end]
-            char_frequency[right_char] = char_frequency.get(right_char, 0) + 1
-            
-            # Shrink the window if we have more than k distinct characters
-            while len(char_frequency) > k:
-                left_char = s[window_start]
-                char_frequency[left_char] -= 1
-                if char_frequency[left_char] == 0:
-                    del char_frequency[left_char]
-                window_start += 1
-            
-            max_length = max(max_length, window_end - window_start + 1)
-        
-        return max_length
-    
-    def find_longest_substring_no_repeat(self, s):
-        """
-        Find the longest substring without repeating characters.
-        
-        Args:
-            s: The input string
-            
-        Returns:
-            The length of the longest substring without repeating characters
-        """
-        if not s:
-            return 0
-        
         char_index_map = {}
-        window_start = 0
-        max_length = 0
-        
-        for window_end in range(len(s)):
-            right_char = s[window_end]
-            
-            # If the character is already in the window, shrink the window
-            if right_char in char_index_map:
-                # Move the window start to the right of the last occurrence of the character
-                window_start = max(window_start, char_index_map[right_char] + 1)
-            
-            # Update the index of the character
-            char_index_map[right_char] = window_end
-            max_length = max(max_length, window_end - window_start + 1)
-        
+
+        for right in range(len(s)):
+            if s[right] in char_index_map and char_index_map[s[right]] >= left:
+                left = char_index_map[s[right]] + 1
+            char_index_map[s[right]] = right
+            max_length = max(max_length, right - left + 1)
         return max_length
     
-    def find_anagrams(self, s, pattern):
+    def find_all_anagrams(self, s, p):
         """
-        Find all anagrams of a pattern in a string.
+        Find all start indices of anagrams of p in s.
         
         Args:
-            s: The input string
-            pattern: The pattern to find anagrams of
+            s: Input string
+            p: Pattern string
             
         Returns:
-            A list of starting indices of all anagrams of the pattern in the string
+            List of start indices of anagrams of p in s
         """
-        if not s or not pattern or len(s) < len(pattern):
+        # TODO: Implement this method
+        # 1. Check if the input strings are valid
+        # 2. Initialize variables for result, pattern count, and window count
+        # 3. Count characters in the pattern
+        # 4. Initialize the first window
+        # 5. Slide the window and check for anagrams
+        # 6. Return the list of start indices
+        if s == None or len(s) < len(p):
             return []
-        
-        pattern_freq = {}
-        for char in pattern:
-            pattern_freq[char] = pattern_freq.get(char, 0) + 1
-        
-        window_start = 0
-        matched = 0
+        pattern_map = self.create_map(p)
+        left = 0
+        right = len(p) - 1
+
         result = []
-        
-        for window_end in range(len(s)):
-            right_char = s[window_end]
+        current_map = self.create_map(s[left:right+1])
+        while right < len(s):
+            if left > 0:
+                left_char = s[left - 1]
+                new_char = s[right]
+                current_map[left_char] = current_map.get(left_char, 0) - 1
+                if current_map[left_char] == 0:
+                    del current_map[left_char]
+                current_map[new_char] = current_map.get(new_char, 0) + 1
+            if current_map == pattern_map:
+                result.append(left)
+            right += 1
+            left += 1
             
-            # If the character is in the pattern, decrement its frequency
-            if right_char in pattern_freq:
-                pattern_freq[right_char] -= 1
-                if pattern_freq[right_char] == 0:
-                    matched += 1
-            
-            # If all characters in the pattern are matched, we found an anagram
-            if matched == len(pattern_freq):
-                result.append(window_start)
-            
-            # If the window size is equal to the pattern length, shrink the window
-            if window_end >= len(pattern) - 1:
-                left_char = s[window_start]
-                window_start += 1
-                
-                # If the character is in the pattern, update the frequency and matched count
-                if left_char in pattern_freq:
-                    if pattern_freq[left_char] == 0:
-                        matched -= 1
-                    pattern_freq[left_char] += 1
-        
+        print(s, p)
+
         return result
     
-    def find_max_in_sliding_window(self, arr, k):
+    def create_map(self, word):
+        map = {}
+        for c in word:
+            map[c] = map.get(c, 0) + 1
+        return map
+
+
+    def max_sliding_window(self, nums, k):
         """
-        Find the maximum of each subarray of size k.
+        Find the maximum element in each sliding window of size k.
         
         Args:
-            arr: The input array
-            k: The size of the window
+            nums: Input array of integers
+            k: Size of the sliding window
             
         Returns:
-            A list containing the maximum of each subarray of size k
+            Array of maximum elements in each sliding window
         """
-        if not arr or k <= 0 or k > len(arr):
-            return []
-        
-        result = []
-        window = deque()
-        
-        for i in range(len(arr)):
-            # Remove elements that are out of the current window
-            while window and window[0] <= i - k:
-                window.popleft()
-            
-            # Remove elements smaller than the current element from the back
-            while window and arr[window[-1]] < arr[i]:
-                window.pop()
-            
-            # Add the current element to the window
-            window.append(i)
-            
-            # If the window has reached its size, add the maximum to the result
-            if i >= k - 1:
-                result.append(arr[window[0]])
-        
-        return result
+        # TODO: Implement this method
+        # 1. Check if the input array is valid and k is within bounds
+        # 2. Initialize variables for result and deque (to store indices)
+        # 3. Process each element in the array:
+        #    a. Remove elements outside the window
+        #    b. Remove smaller elements as they are not useful
+        #    c. Add current element
+        #    d. Add maximum element to result if we have a complete window
+        # 4. Return the result array
+        return []
     
-    def find_min_window_substring(self, s, pattern):
+    def longest_repeating_character_replacement(self, s, k):
         """
-        Find the minimum window substring that contains all characters of the pattern.
+        Find the length of the longest substring containing the same letter after replacing at most k characters.
         
         Args:
-            s: The input string
-            pattern: The pattern string
+            s: Input string
+            k: Maximum number of characters to replace
             
         Returns:
-            The minimum window substring, or an empty string if no such substring exists
+            Length of the longest substring containing the same letter after replacing at most k characters
         """
-        if not s or not pattern or len(s) < len(pattern):
-            return ""
-        
-        pattern_freq = {}
-        for char in pattern:
-            pattern_freq[char] = pattern_freq.get(char, 0) + 1
-        
-        window_start = 0
-        matched = 0
-        min_length = float('inf')
-        substr_start = 0
-        
-        for window_end in range(len(s)):
-            right_char = s[window_end]
-            
-            # If the character is in the pattern, decrement its frequency
-            if right_char in pattern_freq:
-                pattern_freq[right_char] -= 1
-                if pattern_freq[right_char] >= 0:
-                    matched += 1
-            
-            # If all characters in the pattern are matched, try to shrink the window
-            while matched == len(pattern):
-                if window_end - window_start + 1 < min_length:
-                    min_length = window_end - window_start + 1
-                    substr_start = window_start
-                
-                left_char = s[window_start]
-                window_start += 1
-                
-                # If the character is in the pattern, update the frequency and matched count
-                if left_char in pattern_freq:
-                    if pattern_freq[left_char] == 0:
-                        matched -= 1
-                    pattern_freq[left_char] += 1
-        
-        return s[substr_start:substr_start + min_length] if min_length != float('inf') else ""
-    
-    def find_max_profit(self, prices):
-        """
-        Find the maximum profit by buying and selling a stock once.
-        
-        Args:
-            prices: The array of stock prices
-            
-        Returns:
-            The maximum profit
-        """
-        if not prices or len(prices) < 2:
-            return 0
-        
-        max_profit = 0
-        min_price = float('inf')
-        
-        for price in prices:
-            min_price = min(min_price, price)
-            max_profit = max(max_profit, price - min_price)
-        
-        return max_profit
-    
-    def find_longest_ones_subarray(self, arr, k):
-        """
-        Find the longest subarray with ones after replacing at most k zeros.
-        
-        Args:
-            arr: The input array (containing only 0s and 1s)
-            k: The maximum number of zeros that can be replaced
-            
-        Returns:
-            The length of the longest subarray with ones after replacing at most k zeros
-        """
-        if not arr:
-            return 0
-        
-        window_start = 0
-        max_length = 0
-        max_ones_count = 0
-        
-        for window_end in range(len(arr)):
-            if arr[window_end] == 1:
-                max_ones_count += 1
-            
-            # If the number of zeros in the window is more than k, shrink the window
-            if (window_end - window_start + 1 - max_ones_count) > k:
-                if arr[window_start] == 1:
-                    max_ones_count -= 1
-                window_start += 1
-            
-            max_length = max(max_length, window_end - window_start + 1)
-        
-        return max_length
+        # TODO: Implement this method
+        # 1. Check if the input string is valid
+        # 2. Initialize variables for max_length, max_count, character count, and start pointer
+        # 3. Slide the window:
+        #    a. Update character count
+        #    b. Update max_count (most frequent character in the window)
+        #    c. If the number of characters to replace exceeds k, shrink the window
+        #    d. Update max_length
+        # 4. Return the maximum length
+        return 0
