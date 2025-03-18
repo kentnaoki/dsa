@@ -5,11 +5,12 @@ This class provides methods to test various operations of the DFS algorithm.
 from dfs_template import DFSTemplate
 from dfs_solution import DFSSolution
 from dfs import DFS
+from dfs_v2 import DFSV2
 
 # Uncomment the line below to use your implementation
 # DFS = DFSTemplate
 # Comment the line below to use your implementation
-DFS = DFS
+DFS = DFSV2
 
 def test_dfs_traversal():
     """
