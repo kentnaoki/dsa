@@ -2,8 +2,10 @@
 Sliding Window algorithm implementation.
 This class provides a blueprint for implementing various sliding window problems.
 """
+
 from collections import defaultdict, deque
 import sys
+
 
 class SlidingWindow:
     def __init__(self):
@@ -11,15 +13,15 @@ class SlidingWindow:
         Constructor to create a new SlidingWindow instance.
         """
         pass
-    
+
     def max_sum_subarray(self, arr, k):
         """
         Find the maximum sum of a subarray of size k.
-        
+
         Args:
             arr: Input array of integers
             k: Size of the sliding window
-            
+
         Returns:
             Maximum sum of a subarray of size k
         """
@@ -36,20 +38,19 @@ class SlidingWindow:
 
         max_sum = -sys.maxsize - 1
         while right < len(arr):
-            max_sum = max(max_sum, sum(arr[left:right+1]))
+            max_sum = max(max_sum, sum(arr[left : right + 1]))
             left += 1
             right += 1
         return max_sum
 
-    
     def min_size_subarray_sum(self, arr, target_sum):
         """
         Find the minimum size subarray with a sum at least target_sum.
-        
+
         Args:
             arr: Input array of positive integers
             target_sum: Target sum
-            
+
         Returns:
             Minimum size of a subarray with sum at least target_sum, or 0 if no such subarray exists
         """
@@ -73,14 +74,14 @@ class SlidingWindow:
                 left += 1
 
         return min_size if min_size != sys.maxsize else 0
-    
+
     def longest_substring_without_repeating_chars(self, s):
         """
         Find the length of the longest substring without repeating characters.
-        
+
         Args:
             s: Input string
-            
+
         Returns:
             Length of the longest substring without repeating characters
         """
@@ -102,15 +103,15 @@ class SlidingWindow:
             char_index_map[s[right]] = right
             max_length = max(max_length, right - left + 1)
         return max_length
-    
+
     def find_all_anagrams(self, s, p):
         """
         Find all start indices of anagrams of p in s.
-        
+
         Args:
             s: Input string
             p: Pattern string
-            
+
         Returns:
             List of start indices of anagrams of p in s
         """
@@ -128,7 +129,7 @@ class SlidingWindow:
         right = len(p) - 1
 
         result = []
-        current_map = self.create_map(s[left:right+1])
+        current_map = self.create_map(s[left : right + 1])
         while right < len(s):
             if left > 0:
                 left_char = s[left - 1]
@@ -141,26 +142,25 @@ class SlidingWindow:
                 result.append(left)
             right += 1
             left += 1
-            
+
         print(s, p)
 
         return result
-    
+
     def create_map(self, word):
         map = {}
         for c in word:
             map[c] = map.get(c, 0) + 1
         return map
 
-
     def max_sliding_window(self, nums, k):
         """
         Find the maximum element in each sliding window of size k.
-        
+
         Args:
             nums: Input array of integers
             k: Size of the sliding window
-            
+
         Returns:
             Array of maximum elements in each sliding window
         """
@@ -174,15 +174,15 @@ class SlidingWindow:
         #    d. Add maximum element to result if we have a complete window
         # 4. Return the result array
         return []
-    
+
     def longest_repeating_character_replacement(self, s, k):
         """
         Find the length of the longest substring containing the same letter after replacing at most k characters.
-        
+
         Args:
             s: Input string
             k: Maximum number of characters to replace
-            
+
         Returns:
             Length of the longest substring containing the same letter after replacing at most k characters
         """

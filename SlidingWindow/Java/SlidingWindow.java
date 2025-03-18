@@ -24,7 +24,26 @@ public class SlidingWindow {
         // TODO: Implement this method
         // Use the sliding window technique to find the maximum sum subarray of size k
         // Return the maximum sum
-        return 0;
+        if (arr == null || arr.length < k) {
+            return 0;
+        }
+        int left = 0;
+        int maxSum = -1000000000;
+
+        for (int right = k - 1; right < arr.length; right++) {
+            maxSum = Math.max(maxSum, getSum(arr, left, right));
+            left++;
+        }
+        return maxSum;
+
+    }
+
+    private int getSum(int[] arr, int left, int right) {
+        int sum = 0;
+        for (int i = left; i <= right; i++) {
+           sum += arr[i];
+        }
+        return sum;
     }
     
     /**
@@ -38,7 +57,24 @@ public class SlidingWindow {
         // TODO: Implement this method
         // Use the sliding window technique to find the smallest subarray with sum >= target
         // Return the length of the smallest subarray
-        return 0;
+        if (arr == null) {
+            return 0;
+        }
+
+        int left = 0;
+        int minSubArraySize = 100000000;
+
+        for (int right = 0; right < arr.length; right++) {
+            if (getSum(arr, left, right) >= target) {
+                minSubArraySize = Math.min(minSubArraySize, right - left + 1);
+                left++;
+            }
+        }
+
+        if (minSubArraySize == 100000000) {
+            return 0;
+        }
+        return minSubArraySize;
     }
     
     /**
